@@ -10,7 +10,7 @@ joinPythonLocation[args___] := FileNameJoin @ {
 getPythonEnvironment[name_] := {
     "Python",
     "StandardErrorFunction" -> Null,
-    (* "ProcessDirectory" -> joinPythonLocation["Code"], *)
+    "ProcessDirectory" -> joinPythonLocation["Code"],
     "Evaluator" -> <|
         "Dependencies" -> File @ joinPythonLocation["Environments", name, "requirements.txt"],
         "EnvironmentName" -> "Wolfram" <> name

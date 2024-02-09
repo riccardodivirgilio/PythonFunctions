@@ -1,3 +1,4 @@
+import sample_module
 
 def run_double(n):
-    return n * 2
+    return sample_module.double(n)
