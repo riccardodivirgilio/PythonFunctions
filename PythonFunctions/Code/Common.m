@@ -24,7 +24,10 @@ executePythonEntrypoint[name_, entry_, handler_: Function[#2]] :=
         WithCleanup[
             handler[
                 session,
-                confirm @ ExternalEvaluate[session, File @ joinPythonLocation["Environments", name, entry <> ".py"]]
+                confirm @ ExternalEvaluate[
+                    session, 
+                    File @ joinPythonLocation["Environments", name, entry <> ".py"]
+                ]
             ],
             DeleteObject[session]
         ]
