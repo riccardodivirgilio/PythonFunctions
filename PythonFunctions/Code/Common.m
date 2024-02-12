@@ -1,6 +1,6 @@
 
-enclose = Function[expr, Catch[expr, "__python_tag__"], HoldAllComplete]
-confirm = Function[expr, Replace[expr, f_?FailureQ :> Throw[f, "__python_tag__"]]]
+enclose = Function[expr, Catch[expr, "ff27b3c7-720e-4922-bdaf-a48a35fe3a64"], HoldAllComplete]
+confirm = Function[expr, Replace[expr, f_?FailureQ :> Throw[f, "ff27b3c7-720e-4922-bdaf-a48a35fe3a64"]]]
 
 joinPythonLocation[args___] := FileNameJoin @ {
     PacletObject["PythonFunctions"]["AssetLocation", "Python"],
