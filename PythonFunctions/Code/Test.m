@@ -2,7 +2,7 @@ PythonFunctions`TestAddTwo
 PythonFunctions`TestDouble
 PythonFunctions`TestDispatch
 
-(* sample input "Kepler-10" *)
+(* sample input TestAddTwo[12] *)
 TestAddTwo[n_Integer] := 
     executePythonEntrypoint[
         "Test", 
@@ -11,7 +11,7 @@ TestAddTwo[n_Integer] :=
     ]
 
 
-(* sample input "Kepler-10" *)
+(* sample input TestDouble[23] *)
 TestDouble[n_Integer] := 
     executePythonEntrypoint[
         "Test", 
@@ -19,7 +19,7 @@ TestDouble[n_Integer] :=
         Function[{session, func}, func[n]]
     ]
 
-(* sample input "Kepler-10" *)
+(* sample input TestDispatch["add_two", 2] *)
 TestDispatch[name_String, n_Integer] := 
     executePythonEntrypoint[
         "Test", 
