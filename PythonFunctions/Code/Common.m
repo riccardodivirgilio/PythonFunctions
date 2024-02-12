@@ -18,9 +18,8 @@ getPythonEnvironment[name_] := {
 }
 
 executePythonEntrypoint[name_, entry_, handler_: Function[#2]] :=
-    enclose @ Module[
-        {session, object},
-        session = confirm @ StartExternalSession[getPythonEnvironment[name]];
+    enclose @ With[
+        {session = confirm @ StartExternalSession @ getPythonEnvironment @ name},
         WithCleanup[
             handler[
                 session,
