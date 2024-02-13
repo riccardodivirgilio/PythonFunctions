@@ -17,7 +17,20 @@ getPythonEnvironment[name_] := {
     |>
 }
 
-executePythonEntrypoint[name_, entry_, handler_: Function[#2]] :=
+(* 
+
+    this is the main function used to call python code 
+    it takes to argument the environment name and the entrypoint
+
+    - environment name is the name of the folder Python/Environments/{{ name }}
+    - entry point is the name of the file Python/Environments/{{ name }}/{{ entry }}.py
+
+    Calling executePythonEntrypoint["Science", "Kepler"] will create an environment named "Science", using the requirement file under Python/Environment/Science/requirements.txt
+
+    After that it will run the python code under Python/Environment/Science/Kepler.py that will be passed to the optional custom function in the third argument
+
+*)
+executePythonEntrypoint[name_String, entry_String, handler_: Function[#2]] :=
     enclose @ With[
         {session = confirm @ StartExternalSession @ getPythonEnvironment @ name},
         WithCleanup[

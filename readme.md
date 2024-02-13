@@ -9,7 +9,7 @@ TestDispatch["double", 23]
 
 The are environments defined under: Python/Environments
 
-each nvironment defines a requirement.txt file and multiple entry points.
+each environment defines a requirement.txt file and multiple entry points.
 
 The entry point is a python file that returns any kind of python expression, typically a function.
 
