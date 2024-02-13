@@ -12,7 +12,7 @@ getPythonEnvironment[name_] := {
     "StandardErrorFunction" -> Null,
     (* "ProcessDirectory" -> joinPythonLocation["Code"], *)
     "Evaluator" -> <|
-        "Dependencies" -> File @ joinPythonLocation["Environments", name, "requirements.txt"],
+        "Dependencies" -> File @ joinPythonLocation[name, "requirements.txt"],
         "EnvironmentName" -> "Wolfram" <> name
     |>
 }
@@ -27,7 +27,7 @@ getPythonEnvironment[name_] := {
 
     Calling executePythonEntrypoint["Science", "Kepler"] will create an environment named "Science", using the requirement file under Python/Environment/Science/requirements.txt
 
-    After that it will run the python code under Python/Environment/Science/Kepler.py that will be passed to the optional custom function in the third argument
+    After that it will run the python code under Python/Environment/Science/Kepler.py that will be passed to the optional custom function in the third argument.
 
 *)
 executePythonEntrypoint[name_String, entry_String, handler_: Function[#2]] :=
@@ -38,7 +38,7 @@ executePythonEntrypoint[name_String, entry_String, handler_: Function[#2]] :=
                 session,
                 confirm @ ExternalEvaluate[
                     session, 
-                    File @ joinPythonLocation["Environments", name, entry <> ".py"]
+                    File @ joinPythonLocation[name, entry <> ".py"]
                 ]
             ],
             DeleteObject[session]
