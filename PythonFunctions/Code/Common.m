@@ -61,3 +61,36 @@ executePythonEntrypoint[name_String, entry_String, handler_: Function[#2]] :=
 
 executePythonEntrypoint[name_String, entry_Association, handler_: Function[#2]] := 
     executePythonEntrypoint[name, Values[entry], Function[handler[#1, AssociationThread[Keys[entry] -> #2]]]]
+
+
+
+
+(* create python function creates a wrapper for a single entrypoint and automatically adds options *)
+
+$inspectCode = "
+
+import inspect
+
+def make_inspection(func):
+    sig = inspect.signature(func)
+
+
+
+    return {'Parameters': tuple(sig.parameters)}
+
+"
+
+
+SetAttributes[createPythonFunction, HoldFirst]
+
+createPythonFunction[symbol_, name_String, entry_String] := With[
+    {informations = executePythonEntrypoint[
+        name, 
+        entry, 
+        Function[{session, obj}, ExternalEvaluate[session, $inspectCode -> obj]]
+    ]},
+    informations
+
+]
+
+
