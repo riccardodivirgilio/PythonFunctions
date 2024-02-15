@@ -31,19 +31,8 @@ getPythonEnvironment[name_] := {
 
 *)
 
-executePythonEntrypoint[name_String, entry_String, rest___] :=
-    enclose @ executePythonEntrypoint[
-        name,
-        confirm @ Replace[
-            StringSplit[entry, "."], 
-            {
-                {pre__, post_} :> {StringRiffle[{pre}, "."], post},
-                _ :> Failure["InvalidPath"]
-            }
-        ],
-        rest
-    ]
-executePythonEntrypoint[name_String, {module_String, attr_String}, handler_: Function[#2]] :=
+
+executePythonEntrypoint[name_String, entry_String, handler_: Function[#2]] :=
     enclose @ With[
         {session = confirm @ StartExternalSession @ getPythonEnvironment @ name},
         WithCleanup[
@@ -52,8 +41,8 @@ executePythonEntrypoint[name_String, {module_String, attr_String}, handler_: Fun
                 confirm @ ExternalEvaluate[
                     session, 
                     <|
-                        "Command" -> "lambda module, attr: getattr(__import__(module), attr)",
-                        "Arguments" -> {module, attr},
+                        "Command" -> "from wolframclient.utils.importutils import import_string; import_string",
+                        "Arguments" -> entry,
                         "ReturnType" -> "ExternalObject"
                     |>
                 ]
