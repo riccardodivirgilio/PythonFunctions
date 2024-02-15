@@ -14,7 +14,8 @@ getPythonEnvironment[name_] := {
     "Evaluator" -> <|
         "Dependencies" -> File @ joinPythonLocation[name, "requirements.txt"],
         "EnvironmentName" -> "Wolfram" <> name
-    |>
+    |>,
+    "SessionProlog" -> "from wolframclient.utils.importutils import import_string as wolfram_import_string"
 }
 
 (* 
@@ -31,8 +32,9 @@ getPythonEnvironment[name_] := {
 
 *)
 
+ClearAll[executePythonEntrypoint]
 
-executePythonEntrypoint[name_String, entry_String, handler_: Function[#2]] :=
+executePythonEntrypoint[name_String, entry_List, handler_: Function[#2]] :=
     enclose @ With[
         {session = confirm @ StartExternalSession @ getPythonEnvironment @ name},
         WithCleanup[
@@ -40,13 +42,22 @@ executePythonEntrypoint[name_String, entry_String, handler_: Function[#2]] :=
                 session,
                 confirm @ ExternalEvaluate[
                     session, 
-                    <|
-                        "Command" -> "from wolframclient.utils.importutils import import_string; import_string",
-                        "Arguments" -> entry,
-                        "ReturnType" -> "ExternalObject"
-                    |>
+                    Map[
+                        <|
+                            "Command" -> "wolfram_import_string",
+                            "Arguments" -> #,
+                            "ReturnType" -> "ExternalObject"
+                        |> &,
+                        entry
+                    ]
                 ]
             ],
             DeleteObject[session]
         ]
     ]
+
+executePythonEntrypoint[name_String, entry_String, handler_: Function[#2]] := 
+    executePythonEntrypoint[name, {entry}, Function[handler[#1, First[#2]]]]
+
+executePythonEntrypoint[name_String, entry_Association, handler_: Function[#2]] := 
+    executePythonEntrypoint[name, Values[entry], Function[handler[#1, AssociationThread[Keys[entry] -> #2]]]]
