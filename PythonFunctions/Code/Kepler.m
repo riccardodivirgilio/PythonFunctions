@@ -4,9 +4,9 @@ PythonFunctions`KeplerLightCurves
 KeplerLightCurves[obj_String] := 
     executePythonEntrypoint[
         "Science", 
-        "Kepler", 
+        "kepler.entrypoint", 
         Function[
             {session, func},
-            Map[TimeSeries[Transpose[Normal[#]]]&, func[obj]]
+            Map[TimeSeries[Transpose[Normal[#]]]&, func["Call", obj]]
         ]
     ]

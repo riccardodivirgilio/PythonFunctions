@@ -6,8 +6,8 @@ PythonFunctions`TestDispatch
 TestAddTwo[n_Integer] := 
     executePythonEntrypoint[
         "Test", 
-        "AddTwo", 
-        Function[{session, func}, func[n]]
+        "add_two.run_add_two", 
+        Function[{session, func}, func["Call", n]]
     ]
 
 
@@ -15,14 +15,14 @@ TestAddTwo[n_Integer] :=
 TestDouble[n_Integer] := 
     executePythonEntrypoint[
         "Test", 
-        "Double", 
-        Function[{session, func}, func[n]]
+        "double.run_double", 
+        Function[{session, func}, func["Call", n]]
     ]
 
 (* sample input TestDispatch["add_two", 2] *)
 TestDispatch[name_String, n_Integer] := 
     executePythonEntrypoint[
         "Test", 
-        "Dispatch", 
-        Function[{session, func}, func[name, n]]
+        "dispatch.api", 
+        Function[{session, func}, func["MethodCall", name, n]]
     ]

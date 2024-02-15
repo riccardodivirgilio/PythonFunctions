@@ -6,8 +6,4 @@ class API:
     def double(self, n):
         return n * 2
 
-
 api = API()
-
-def dispatch(name, *args, **opts):
-    return getattr(api, name)(*args, **opts)
