@@ -32,8 +32,6 @@ getPythonEnvironment[name_] := {
 
 *)
 
-ClearAll[executePythonEntrypoint]
-
 executePythonEntrypoint[name_String, entry_List, handler_: Function[#2]] :=
     enclose @ With[
         {session = confirm @ StartExternalSession @ getPythonEnvironment @ name},
