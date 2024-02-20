@@ -10,10 +10,12 @@ joinPythonLocation[args___] := FileNameJoin @ {
 getPythonEnvironment[name_] := {
     "Python",
     "StandardErrorFunction" -> Null,
-    "ProcessDirectory" -> joinPythonLocation[name],
     "Evaluator" -> <|
         "Dependencies" -> File @ joinPythonLocation[name, "requirements.txt"],
         "EnvironmentName" -> "Wolfram" <> name
     |>,
-    "SessionProlog" -> "from wolframclient.utils.importutils import import_string as wolfram_import_string"
+    "SessionProlog" -> {
+        "import sys; sys.path.extend" -> {{joinPythonLocation["Common"], joinPythonLocation[name]}},
+        "from wolframclient.utils.importutils import import_string as wolfram_import_string"
+    }
 }
