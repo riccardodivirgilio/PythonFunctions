@@ -12,7 +12,7 @@ Scan[
             FileNameJoin @ {DirectoryName @ $InputFileName, #}
         ]
     ] &,
-    {"Code", "Wrappers"}
+    {"Code", "Wolfram"}
 ]
 
 
