@@ -46,7 +46,7 @@ executePythonEntrypoint[name_String, entry_List, handler_: Function[#1], Options
         {session = confirm @ StartExternalSession @ getPythonEnvironment @ name},
         WithCleanup[
             handler[
-                confirm @ ExternalEvaluate[
+                confirm /@ confirm @ ExternalEvaluate[
                     session, 
                     Map[
                         <|
