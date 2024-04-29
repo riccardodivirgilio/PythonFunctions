@@ -15,31 +15,55 @@ def run_validation(func, *args, **opts):
 
         errors = exception.errors()
 
-        for err in errors:
-            #dropping pydantic urls
-            err.pop('url')
+        if len(errors) == 1 and errors[0]['loc'] == (0, ):
 
-        # Experimental automatic listability
+            if errors[0]['type'] == 'list_type':
 
-        if len(errors) == 1 and errors[0]['loc'] == (0, ) and not errors[0]['type'] == 'list_type':
+                if isinstance(args[0], dict):
 
-            if isinstance(args[0], (tuple, list)):
-                return tuple(
-                    run_validation(func, p, *args[1:], **opts)
-                    for p in args[0]
-                )
-            if isinstance(args[0], dict):
-                return {
-                    k: run_validation(func, p, *args[1:], **opts)
-                    for k, p in args[0].items()
-                }
+                    return run_validation(func, args[0].values(), *args[1:], **opts)
+
+                if not isinstance(args[0], (list, tuple)):
+
+                    return run_validation(func, (args[0], ), *args[1:], **opts)
+
+            else:
+
+                if isinstance(args[0], (tuple, list)):
+                    return tuple(
+                        run_validation(func, p, *args[1:], **opts)
+                        for p in args[0]
+                    )
+
+                if isinstance(args[0], dict):
+                    return {
+                        k: run_validation(func, p, *args[1:], **opts)
+                        for k, p in args[0].items()
+                    }
+
+                raise NotImplementedError('Should never happen 😅')
+
+
+
+                # anything else is a valid error
+        #
 
         return wl.Failure(
             "InterpretationFailure", {
                 #'MessageTemplate': "\n".join(err['msg'] for err in errors),
                 'MessageTemplate': str(exception),
                 'MessageParameters': {},
-                'Errors': errors
+                'Errors': tuple(
+                    {
+                        'Type': err['type'],
+                        'Message': err['msg'],
+                        'Path': tuple(
+                            i + 1 if isinstance(i, int) else i
+                            for i in err['loc']
+                        ),
+                    }
+                    for err in errors
+                )
             }
         )
 
