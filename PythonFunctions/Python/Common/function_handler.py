@@ -1,17 +1,14 @@
 from wolframclient.utils.importutils import import_string
-from wolframclient.utils.importutils import (
-    safe_import_string_and_call as import_string_and_call,
-)
 from wolframclient.language import wl
 from functools import partial
 
 def run_validation(func, *args, **opts):
 
-    from pydantic import ValidationError
+    import pydantic
 
     try:
         return func(*args, **opts)
-    except ValidationError as exception:
+    except pydantic.ValidationError as exception:
 
         errors = exception.errors()
 
@@ -70,13 +67,16 @@ def run_validation(func, *args, **opts):
 
 
 def function_handler(path, validate_call=True):
+
     func = import_string(path)
 
-    assert callable(func), "{} must be callable".format(path)
-
     if validate_call:
-        func = import_string_and_call(
-            "pydantic.validate_call",
+
+        assert callable(func), "{} must be callable".format(path)
+
+        import pydantic
+
+        func = pydantic.validate_call(
             func,
             validate_return=True,
             config={
