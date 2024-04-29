@@ -16,6 +16,9 @@ def DatesAdd(
 ) -> List[datetime.datetime]:
     return [d + Delta for d in Dates]
 
+def Mean(Input: List[float]) -> float:
+    return sum(Input) / len(Input)
+
 def MatrixAdd(
     Dates: List[List[int]], Delta: int = 1
 ) -> List[List[int]]:
