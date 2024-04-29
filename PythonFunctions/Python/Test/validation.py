@@ -16,6 +16,10 @@ def DatesAdd(
 ) -> List[datetime.datetime]:
     return [d + Delta for d in Dates]
 
+def MatrixAdd(
+    Dates: List[List[int]], Delta: int = 1
+) -> List[List[int]]:
+    return [[d + Delta for d in date_list] for date_list in Dates]
 
 class Movie(TypedDict):
     Name: str
