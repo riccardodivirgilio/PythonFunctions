@@ -22,9 +22,9 @@ The entrypoint is called using the following function that takes 3 arguments:
 ```
     executePythonEntrypoint[
         "Test", 
-        "Dispatch", 
+        "dispatch.api", 
         Function[
-            {session, func},
+            {func, session},
             {
                 func["add_two", 3],
                 func["double", 2]
