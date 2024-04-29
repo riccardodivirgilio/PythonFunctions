@@ -6,7 +6,7 @@ KeplerLightCurves[obj_String] :=
         "Science", 
         "kepler.entrypoint", 
         Function[
-            {session, func},
+            {func, session},
             Map[TimeSeries[Transpose[Normal[#]]]&, func[obj]]
         ]
     ]

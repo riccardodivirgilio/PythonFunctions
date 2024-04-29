@@ -16,7 +16,7 @@ getPythonEnvironment[name_] := {
     |>,
     "SessionProlog" -> {
         "import sys; sys.path.extend" -> {{joinPythonLocation["Common"], joinPythonLocation[name]}},
-        "from wolframclient.utils.importutils import import_string as wolfram_import_string"
+        "from function_handler import function_handler"
     }
 }
 
@@ -36,30 +36,35 @@ getPythonEnvironment[name_] := {
 
 *)
 
-executePythonEntrypoint[name_String, entry_List, handler_: Function[#2]] :=
+Options[executePythonEntrypoint] := {
+    "ReturnType" -> "Expression",
+    "Validate" -> True
+}
+
+executePythonEntrypoint[name_String, entry_List, handler_: Function[#1], OptionsPattern[]] :=
     enclose @ With[
         {session = confirm @ StartExternalSession @ getPythonEnvironment @ name},
         WithCleanup[
             handler[
-                session,
                 confirm @ ExternalEvaluate[
                     session, 
                     Map[
                         <|
-                            "Command" -> "wolfram_import_string",
-                            "Arguments" -> #,
-                            "ReturnType" -> "Expression"
+                            "Command" -> "function_handler",
+                            "Arguments" -> {#, "validate_call" -> OptionValue["Validate"]},
+                            "ReturnType" -> OptionValue["ReturnType"]
                         |> &,
                         entry
                     ]
-                ]
+                ],
+                session
             ],
             DeleteObject[session]
         ]
     ]
 
-executePythonEntrypoint[name_String, entry_String, handler_: Function[#2]] := 
-    executePythonEntrypoint[name, {entry}, Function[handler[#1, First[#2]]]]
+executePythonEntrypoint[name_String, entry_String, handler_: Function[#1], rest___] := 
+    executePythonEntrypoint[name, {entry}, Function[handler[First[#1], #2]], rest]
 
-executePythonEntrypoint[name_String, entry_Association, handler_: Function[#2]] := 
-    executePythonEntrypoint[name, Values[entry], Function[handler[#1, AssociationThread[Keys[entry] -> #2]]]]
+executePythonEntrypoint[name_String, entry_Association, handler_: Function[#1], rest___] := 
+    executePythonEntrypoint[name, Values[entry], Function[handler[AssociationThread[Keys[entry] -> #1], #2]], rest]

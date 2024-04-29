@@ -1,4 +1,4 @@
-class API:
+class MyAPIClass:
 
     def add_two(self, n):
         return n + 2
@@ -7,5 +7,5 @@ class API:
         return n * 2
 
 
-def dispatch_method(method, *args, **opts):
-    return getattr(API(), method)(*args, **opts)
+def api(method, *args, **opts):
+    return getattr(MyAPIClass(), method)(*args, **opts)
