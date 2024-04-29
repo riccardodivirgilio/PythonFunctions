@@ -10,11 +10,14 @@ def function_handler(path, validate_call=True):
     assert callable(func), "{} must be callable".format(path)
 
     if validate_call:
-        return import_string_and_call(
+        func = import_string_and_call(
             "pydantic.validate_call",
             func,
             validate_return=True,
-            config={"arbitrary_types_allowed": True},
-        )
+            config={
+                "arbitrary_types_allowed": True, 
+                "strict": False, 
+            },
+        ) 
 
     return func
