@@ -7,6 +7,6 @@ KeplerLightCurves[obj_String] :=
         "kepler.entrypoint", 
         Function[
             {session, func},
-            Map[TimeSeries[Transpose[Normal[#]]]&, func["Call", obj]]
+            Map[TimeSeries[Transpose[Normal[#]]]&, func[obj]]
         ]
     ]

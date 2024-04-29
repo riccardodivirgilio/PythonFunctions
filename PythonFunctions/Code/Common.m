@@ -44,7 +44,7 @@ executePythonEntrypoint[name_String, entry_List, handler_: Function[#2]] :=
                         <|
                             "Command" -> "wolfram_import_string",
                             "Arguments" -> #,
-                            "ReturnType" -> "ExternalObject"
+                            "ReturnType" -> "Expression"
                         |> &,
                         entry
                     ]
