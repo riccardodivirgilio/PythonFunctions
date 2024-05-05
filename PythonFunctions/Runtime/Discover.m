@@ -1,7 +1,7 @@
 
 PythonFunctions`PythonFunction
 
-discoverPythonFunctions[] := discoverPythonFunctions[] = Association @ Map[
+$pythonFunctions := $pythonFunctions = Association @ Map[
     With[
         {entry = #FunctionName, name = Last[StringSplit[#FunctionName, "."]], path = #Path},
         name -> Function[executePythonEntrypoint[path, entry, Function[func, func[##]]]]
@@ -9,5 +9,5 @@ discoverPythonFunctions[] := discoverPythonFunctions[] = Association @ Map[
     Import[PacletObject["PythonFunctions"]["AssetLocation", "Manifest"]]
 ]
 
-PythonFunction[] := Keys[discoverPythonFunctions[]]
-PythonFunction[s_String][args___] := discoverPythonFunctions[][s][args]
+PythonFunction[] := Keys[$pythonFunctions]
+PythonFunction[s_String][args___] := $pythonFunctions[s][args]
