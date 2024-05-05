@@ -37,7 +37,6 @@ def run_validation(func, *args, **opts):
                         for k, p in args[0].items()
                     }
 
-
                 # anything else is a valid error
         #
 
@@ -72,10 +71,7 @@ def function_handler(path, validate_call=True):
         func = pydantic.validate_call(
             func,
             validate_return=True,
-            config={
-                "arbitrary_types_allowed": True, 
-                "strict": False, 
-            },
+            config={"arbitrary_types_allowed": True, "strict": False},
         )
 
         func = partial(run_validation, func)
