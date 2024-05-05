@@ -7,5 +7,5 @@ class MyAPIClass:
         return n * 2
 
 
-def api(method, *args, **opts):
+def Dispatch(method, *args, **opts):
     return getattr(MyAPIClass(), method)(*args, **opts)

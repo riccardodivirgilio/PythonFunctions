@@ -7,16 +7,9 @@ Paclet[
 	Loading -> Automatic,
 	Extensions -> {
         {"Resource", 
-        	"Root" -> ".", 
-			"Resources" -> {
-		    	{"Manifest", "Meta/Manifest.wxf"}
-	    	}
-        },
-        {"Resource", 
         	"Root" -> "Python", 
         	"Resources" -> {"Common", "Functions"}
         },
-
 		{"Kernel", 
             "Root" -> ".", 
 			"Context" -> {"PythonFunctions`"}, 

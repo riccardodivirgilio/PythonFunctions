@@ -1,2 +1,2 @@
-def run_double(n):
+def Double(n):
     return n * 2
