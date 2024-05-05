@@ -1,4 +1,6 @@
 
+enclose = Function[expr, Catch[expr, "ff27b3c7-720e-4922-bdaf-a48a35fe3a64"], HoldAllComplete]
+confirm = Function[expr, Replace[expr, f_?FailureQ :> Throw[f, "ff27b3c7-720e-4922-bdaf-a48a35fe3a64"]]]
 
 
 
@@ -33,21 +35,21 @@ joinFunctionsLocation[args___] := FileNameJoin @ {
 }
 
 buildPythonFunctions[] := 
-    With[
+    enclose @ With[
         {paths = relativeFileNames["*.py", joinFunctionsLocation[], Infinity]},
         Transpose[
             <|
                 "Path" -> Map[DirectoryName, paths],
-                "FunctionName" -> findFunctionName[paths]
+                "FunctionName" -> confirm @ findFunctionName[paths]
             |>,
             AllowedHeads -> All
         ]
     ]
 
 savePythonManifest[] := 
-    Export[
+    enclose @ Export[
         PacletObject["PythonFunctions"]["AssetLocation", "Manifest"],
-        buildPythonFunctions[]
+        confirm @ buildPythonFunctions[]
     ]
 
 
