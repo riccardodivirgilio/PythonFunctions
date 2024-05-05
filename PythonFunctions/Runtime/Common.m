@@ -12,7 +12,7 @@ getPythonEnvironment[name_] := {
     "StandardErrorFunction" -> Null,
     "Evaluator" -> <|
         "Dependencies" -> File @ joinPythonLocation[name, "requirements.txt"],
-        "EnvironmentName" -> "Wolfram" <> name
+        "EnvironmentName" -> "WolframFunctions" <> name
     |>,
     "SessionProlog" -> {
         "import sys; sys.path.extend" -> {{
