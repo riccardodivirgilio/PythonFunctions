@@ -37,7 +37,6 @@ def run_validation(func, *args, **opts):
                         for k, p in args[0].items()
                     }
 
-                raise NotImplementedError("Should never happen 😅")
 
                 # anything else is a valid error
         #
