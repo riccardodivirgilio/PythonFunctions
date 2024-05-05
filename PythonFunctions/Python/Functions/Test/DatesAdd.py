@@ -6,6 +6,6 @@ from typing import List
 from typing_extensions import TypedDict
 
 def DatesAdd(
-    Dates: List[datetime.datetime], Delta: datetime.timedelta = 1
+    Dates: List[datetime.datetime], Delta: datetime.timedelta = datetime.timedelta(seconds = 1)
 ) -> List[datetime.datetime]:
     return [d + Delta for d in Dates]
