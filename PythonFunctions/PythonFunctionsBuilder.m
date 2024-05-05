@@ -1,5 +1,5 @@
 
-BeginPackage["PythonFunctions`"]
+BeginPackage["PythonFunctionsBuilder`"]
 
 Begin["`Private`"]
 
@@ -12,7 +12,7 @@ Scan[
             FileNameJoin @ {DirectoryName @ $InputFileName, #}
         ]
     ] &,
-    {"Runtime"}
+    {"Builder"}
 ]
 
 

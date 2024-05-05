@@ -8,11 +8,23 @@ Paclet[
 	Extensions -> {
         {"Resource", 
         	"Root" -> ".", 
-        	"Resources" -> {"Python"}
+			"Resources" -> {
+		    	{"Manifest", "Meta/Manifest.wxf"}
+	    	}
         },
+        {"Resource", 
+        	"Root" -> "Python", 
+        	"Resources" -> {"Common", "Functions"}
+        },
+
 		{"Kernel", 
             "Root" -> ".", 
 			"Context" -> {"PythonFunctions`"}, 
+			"Symbols" -> {}
+		},
+		{"Kernel", 
+            "Root" -> ".", 
+			"Context" -> {"PythonFunctionsBuilder`"}, 
 			"Symbols" -> {}
 		}
 	}

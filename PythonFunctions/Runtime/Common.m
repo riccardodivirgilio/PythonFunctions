@@ -3,7 +3,7 @@ enclose = Function[expr, Catch[expr, "ff27b3c7-720e-4922-bdaf-a48a35fe3a64"], Ho
 confirm = Function[expr, Replace[expr, f_?FailureQ :> Throw[f, "ff27b3c7-720e-4922-bdaf-a48a35fe3a64"]]]
 
 joinPythonLocation[args___] := FileNameJoin @ {
-    PacletObject["PythonFunctions"]["AssetLocation", "Python"],
+    PacletObject["PythonFunctions"]["AssetLocation", "Functions"],
     args
 }
 
@@ -15,7 +15,10 @@ getPythonEnvironment[name_] := {
         "EnvironmentName" -> "Wolfram" <> name
     |>,
     "SessionProlog" -> {
-        "import sys; sys.path.extend" -> {{joinPythonLocation["Common"], joinPythonLocation[name]}},
+        "import sys; sys.path.extend" -> {{
+            PacletObject["PythonFunctions"]["AssetLocation", "Common"], 
+            joinPythonLocation[name]}
+        },
         "from function_handler import function_handler"
     }
 }
