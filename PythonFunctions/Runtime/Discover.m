@@ -16,8 +16,12 @@ $pythonFunctions := $pythonFunctions = Association @ Apply[
     {1}
 ]
 
+
+Options[PythonFunction] = Options[executePythonEntrypoint]
+
+
 PythonFunction[] := Keys[$pythonFunctions]
-PythonFunction[func_String][args___] := enclose @ With[
+PythonFunction[func_String, opts:OptionsPattern[]][args___] := enclose @ With[
     {
         module = Lookup[
             $pythonFunctions, 
@@ -25,5 +29,5 @@ PythonFunction[func_String][args___] := enclose @ With[
             confirm @ Failure["NotAFunction"]
         ]
     },
-    executePythonEntrypoint[module, func <> "." <> func, Function[#[args]]]
+    executePythonEntrypoint[module, func <> "." <> func, Function[#[args]], opts]
 ]

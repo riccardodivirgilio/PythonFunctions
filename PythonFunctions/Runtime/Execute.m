@@ -10,6 +10,7 @@ joinPythonLocation[args___] := FileNameJoin @ {
 getPythonEnvironment[name_] := {
     "Python",
     "StandardErrorFunction" -> Null,
+    "ID" -> "PythonFunctions" <> name,
     "Evaluator" -> <|
         "Dependencies" -> File @ joinPythonLocation[name, "requirements.txt"],
         "EnvironmentName" -> "WolframFunctions" <> name
@@ -41,7 +42,8 @@ getPythonEnvironment[name_] := {
 
 Options[executePythonEntrypoint] := {
     "ReturnType" -> "Expression",
-    "Validate" -> True
+    "Validate" -> True,
+    "KeepOpen" -> True
 }
 
 executePythonEntrypoint[name_String, entry_List, handler_: Function[#1], OptionsPattern[]] :=
@@ -62,7 +64,12 @@ executePythonEntrypoint[name_String, entry_List, handler_: Function[#1], Options
                 ],
                 session
             ],
-            DeleteObject[session]
+
+            If[
+                TrueQ[OptionValue["KeepOpen"]],
+                Null,
+                DeleteObject[session]
+            ]
         ]
     ]
 
