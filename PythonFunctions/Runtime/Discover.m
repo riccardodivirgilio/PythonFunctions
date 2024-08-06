@@ -94,30 +94,60 @@ $pythonFunctions := $pythonFunctions = Association @ Apply[
 Options[PythonFunction] = Options[executePythonEntrypoint]
 
 
+(* failure modes *)
+
+missingFunctionError[func_] := confirm @ Failure[
+    "MissingFunction",
+    <|
+        "MessageTemplate" -> "Invalid function `Function`",
+        "MessageParameters" -> <|
+            "Function" -> func
+        |>,
+        "Choices" -> PythonFunction[]
+    |>
+]
+
+missingFunctionError[func_, namespace_] := confirm @ Failure[
+    "MissingFunction",
+    <|
+        "MessageTemplate" -> "Invalid function `Function` for namespace `Namespace`",
+        "MessageParameters" -> <|
+            "Function" -> func,
+            "Namespace" -> namespace
+        |>
+    |>
+]
+
+multipleImplementationError[func_, namespace_, implementations_] := confirm @ Failure[
+    "ImproperlyConfigured",
+    <|
+        "MessageTemplate" -> "The function `Function` doesn't have a single implementation for namespace `Namespace`",
+        "MessageParameters" -> <|
+            "Function" -> func,
+            "Namespace" -> namespace
+        |>,
+        "Implementations" -> implementations
+    |>
+]
+
+
+
+
 PythonFunction::notunique = "The function `` appears in multiple namespaces, it was selected the one from `` namespace"
 
 PythonFunction[] := Keys[functionLibrary[]]
-PythonFunction[func_String, rest___] := 
+PythonFunction[func_String, rest___][args___] := 
     enclose @ Replace[
         functionLibrary[][[func]],
         {
-            _Missing :> confirm @ Failure[
-                "MissingFunction",
-                <|
-                    "MessageTemplate" -> "Invalid function `Function`",
-                    "MessageParameters" -> <|
-                        "Function" -> func
-                    |>,
-                    "Choices" -> PythonFunction[]
-                |>
-            ],
+            _Missing :> missingFunctionError[func],
             assoc_Association :> With[
                 {namespace = First @ Keys @ assoc},
                 If[
                     Length[assoc] > 1,
                     Message[PythonFunction::notunique, func, namespace]
                 ];
-                PythonFunction[{namespace, func}]
+                PythonFunction[{namespace, func}][args]
             ]
         }
     ]
@@ -126,34 +156,31 @@ PythonFunction[func_String, rest___] :=
 
 PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] := 
     enclose @ With[
-        {info = Replace[
-            functionLibrary[][[func, namespace]],
-            {
-                _Missing :> confirm @ Failure[
-                    "MissingFunction",
-                    <|
-                        "MessageTemplate" -> "Invalid function `Function` for namespace `Namespace`",
-                        "MessageParameters" -> <|
-                            "Function" -> func,
-                            "Namespace" -> namespace
-                        |>
-                    |>
-                ],
-                {one_} :> one,
-                s_List :> confirm @ Failure[
-                    "ImproperlyConfigured",
-                    <|
-                        "MessageTemplate" -> "The function `Function` has multiple implementations for namespace `Namespace`",
-                        "MessageParameters" -> <|
-                            "Function" -> func,
-                            "Namespace" -> namespace
-                        |>,
-                        "Implementations" -> Flatten[s[[All, "Python"]]]
-                    |>
-                ]
+        {
+            info = Replace[
+                functionLibrary[][[func, namespace]],
+                {
+                    _Missing :> missingFunctionError[func, namespace],
+                    {one_} :> one,
+                    s_List :> multipleImplementationError[
+                        func, namespace, 
+                        Flatten[s[[All, "Python"]]]
+                    ]
+                }
+            ]
+        },
+        {
+            callPythonFunction = List
+        },
+
+        Replace[
+            Lookup[info, {"Python", "WL"}, {}], {
+                {{p_}, {wl_}}  :> callPythonFunction[p, Get[wl]],
+                {{p_}, {}}     :> callPythonFunction[p, Identity],
+                {impl:{__}}    :> multipleImplementationError[func, namespace, impl],
+                {_, impl:{__}} :> multipleImplementationError[func, namespace, impl]
             }
-        ]},
-        info
+        ]
     ]
 
 
