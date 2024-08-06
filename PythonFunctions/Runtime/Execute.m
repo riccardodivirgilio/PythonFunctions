@@ -74,7 +74,17 @@ executePythonEntrypoint[name_String, entry_List, handler_: Function[#1], Options
     ]
 
 executePythonEntrypoint[name_String, entry_String, handler_: Function[#1], rest___] := 
-    executePythonEntrypoint[name, {entry}, Function[handler[First[#1], #2]], rest]
+    executePythonEntrypoint[
+        name, 
+        {entry}, 
+        Function[handler[First[#1], #2]], 
+        rest
+    ]
 
 executePythonEntrypoint[name_String, entry_Association, handler_: Function[#1], rest___] := 
-    executePythonEntrypoint[name, Values[entry], Function[handler[AssociationThread[Keys[entry] -> #1], #2]], rest]
+    executePythonEntrypoint[
+        name, 
+        Values[entry], 
+        Function[handler[AssociationThread[Keys[entry] -> #1], #2]], 
+        rest
+    ]
