@@ -12,6 +12,7 @@ discoverExtensions[] :=
             {"PythonFunctions", rules___} :> <|
                 
                 "Namespace" -> #["Name"], 
+                "ID" -> "PythonFunctions" <> #["Name"],
                 "Root" -> "PythonFunctions",
                 "Evaluator" -> <||>,
                 rules,
@@ -75,7 +76,7 @@ functionLibrary[] := functionLibrary[] = KeySort @ Merge[
 
 
 
-Options[PythonFunction] = Options[executePythonEntrypoint]
+Options[PythonFunction] := Options[executePythonFile]
 
 
 (* failure modes *)
@@ -154,29 +155,28 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
             ]
         },
         {
-            callPythonFunction = List
+            options = Sequence @@ Normal @ KeyDrop[info, {"Python", "WL", "Namespace"}]
+        },
+        {
+            callPythonFunction = Function[
+                {file, handler},
+                executePythonFile[
+                    file, 
+                    Function[
+                        handler[#1, {args}, #2]
+                    ], 
+                    options
+                ]
+            ]
         },
 
         Replace[
             Lookup[info, {"Python", "WL"}, {}], {
                 {{p_}, {wl_}}  :> callPythonFunction[p, Get[wl]],
-                {{p_}, {}}     :> callPythonFunction[p, Identity],
+                {{p_}, {}}     :> callPythonFunction[p, Function[Apply[#1, #2]]],
                 {impl:{__}}    :> multipleImplementationError[func, namespace, impl],
                 {_, impl:{__}} :> multipleImplementationError[func, namespace, impl]
             }
         ]
     ]
-
-
-PythonFunction[{}, opts:OptionsPattern[]][args___] := enclose @ With[
-    {
-        module = Lookup[
-            $pythonFunctions, 
-            func, 
-            confirm @ Failure["NotAFunction"]
-        ]
-    },
-    executePythonEntrypoint[module, func <> "." <> func, Function[#[args]], opts]
-]
-
 

@@ -58,9 +58,9 @@ def run_validation(func, *args, **opts):
         )
 
 
-def function_handler(path, validate_call=True):
+def function_handler(func, validate_call=True):
 
-    func = import_string(path)
+
 
     if validate_call:
 

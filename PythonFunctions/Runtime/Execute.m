@@ -7,84 +7,51 @@ joinPythonLocation[args___] := FileNameJoin @ {
     args
 }
 
-getPythonEnvironment[name_] := {
-    "Python",
-    "StandardErrorFunction" -> Null,
-    "ID" -> "PythonFunctions" <> name,
-    "Evaluator" -> <|
-        "Dependencies" -> File @ joinPythonLocation[name, "requirements.txt"],
-        "EnvironmentName" -> "WolframFunctions" <> name
-    |>,
-    "SessionProlog" -> {
-        "import sys; sys.path.extend" -> {{
-            PacletObject["PythonFunctions"]["AssetLocation", "Common"], 
-            joinPythonLocation[name]}
-        },
-        "from function_handler import function_handler"
-    }
-}
 
-
-
-(* 
-
-    this is the main function used to call python code 
-    it takes to argument the environment name and the entrypoint
-
-    - environment name is the name of the folder Python/Environments/{{ name }}
-    - entry point is the python import path of the module
-
-    Calling executePythonEntrypoint["Science", "Kepler"] will create an environment named "Science", using the requirement file under Python/Environment/Science/requirements.txt
-
-    After that it will run the python code under Python/Environment/Science/Kepler.py that will be passed to the optional custom function in the third argument.
-
-*)
-
-Options[executePythonEntrypoint] := {
+Options[executePythonFile] := {
+    "ID" -> Automatic,
     "ReturnType" -> "Expression",
     "Validate" -> True,
-    "KeepOpen" -> True
+    "KeepOpen" -> False,
+    "StandardErrorFunction" -> Automatic,
+    "StandardOutputFunction" -> Automatic,
+    "Evaluator" -> <||>
 }
 
-executePythonEntrypoint[name_String, entry_List, handler_: Function[#1], OptionsPattern[]] :=
+
+executePythonFile[file_String, handler_: Function[#1], OptionsPattern[]] := 
     enclose @ With[
-        {session = confirm @ StartExternalSession @ getPythonEnvironment @ name},
+        {session = confirm @ StartExternalSession @ {
+            "Python",
+            "StandardErrorFunction" -> OptionValue["StandardErrorFunction"],
+            "ID"                    -> OptionValue["ID"],
+            "Evaluator"             -> OptionValue["Evaluator"],
+            "ReturnType"            -> OptionValue["ReturnType"],
+            "SessionProlog"         -> {
+
+                "import sys; sys.path.extend" -> {{
+                    PacletObject["PythonFunctions"]["AssetLocation", "Common"]
+                }}
+
+            }
+        }},
         WithCleanup[
             handler[
-                confirm /@ confirm @ ExternalEvaluate[
-                    session, 
-                    Map[
-                        <|
-                            "Command" -> "function_handler",
-                            "Arguments" -> {#, "validate_call" -> OptionValue["Validate"]},
-                            "ReturnType" -> OptionValue["ReturnType"]
-                        |> &,
-                        entry
-                    ]
+                confirm @ ExternalEvaluate[
+                    session, <|
+                        "Command" -> ExternalOperation["Import", "function_handler", "function_handler"],
+                        "Arguments" -> {
+                            ExternalObject["Python", File[file]], 
+                            "validate_call" -> OptionValue["Validate"]
+                        }
+                    |>
                 ],
                 session
             ],
-
             If[
                 TrueQ[OptionValue["KeepOpen"]],
                 Null,
                 DeleteObject[session]
             ]
         ]
-    ]
-
-executePythonEntrypoint[name_String, entry_String, handler_: Function[#1], rest___] := 
-    executePythonEntrypoint[
-        name, 
-        {entry}, 
-        Function[handler[First[#1], #2]], 
-        rest
-    ]
-
-executePythonEntrypoint[name_String, entry_Association, handler_: Function[#1], rest___] := 
-    executePythonEntrypoint[
-        name, 
-        Values[entry], 
-        Function[handler[AssociationThread[Keys[entry] -> #1], #2]], 
-        rest
     ]
