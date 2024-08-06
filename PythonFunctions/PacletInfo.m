@@ -14,6 +14,27 @@ Paclet[
             "Root" -> ".", 
 			"Context" -> {"PythonFunctions`"}, 
 			"Symbols" -> {}
+		},
+		{
+			"PythonFunctions",
+			"Namespace" -> "AnotherEnv",
+			"Root" -> "Python/Functions/AnotherEnv"
+		},
+		{
+			"PythonFunctions",
+			"Namespace" -> "Science",
+			"Root" -> "Python/Functions/Science",
+			"Evaluator" -> <|
+				"Dependencies" -> {"lightcurve", "pydantic"}
+			|>
+		},
+		{
+			"PythonFunctions",
+			"Namespace" -> "Test",
+			"Root" -> "Python/Functions/Test",
+			"Evaluator" -> <|
+				"Dependencies" -> {"lightcurve", "pydantic"}
+			|>
 		}
 	}
 ]
