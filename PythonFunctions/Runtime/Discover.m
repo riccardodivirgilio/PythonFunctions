@@ -52,33 +52,6 @@ processExtensions[] := processData[
         ]
     ],
 
-    (* validation step, we need to make sure filenames are not full of garbage *)
-    Function[
-        Scan[
-            Function @ KeyValueMap[
-                Function[
-                    {lang, paths},
-                    If[
-                        Length[paths] =!= 1, 
-                        confirm @ Failure[
-                            "ImproperlyConfigured", <|
-                                "Paths" -> #,
-                                "MessageTemplate" -> "The function `Function` has not been declared `Count` times in `Language`", 
-                                "MessageParameters" -> <|
-                                    "Function" -> FileBaseName @ First @ First @ #,
-                                    "Count" -> Length[paths],
-                                    "Language" -> lang
-                                |>
-                            |>
-                        ]
-                    ]
-                ],
-                <|"Python" -> {}, #|>
-            ],
-            #Functions
-        ];
-        {}
-    ],
 
     (* adding namespace in all functions *)
 
@@ -87,15 +60,8 @@ processExtensions[] := processData[
             Function[
                 info, <|
                     "Namespace" -> #Namespace, 
-                    Replace[
-                        Lookup[info, "WL"], {
-                            {s_String} :> "Processor" :> Get[s],
-                            _ :> "Processor" -> Identity
-                        }
-                    ],
-                    "File" -> File[info[["Python", 1]]]
-
-
+                    "Evaluator" -> #Evaluator,
+                    info
                 |>
             ],
             #Functions
@@ -108,6 +74,7 @@ functionLibrary[] := KeySort @ Merge[
     processExtensions[][[All, "Functions"]],
     Function @ GroupBy[#, Key["Namespace"]]
 ]
+
 
 
 
@@ -136,7 +103,7 @@ PythonFunction::notunique = "The function `` appears in multiple namespaces, it 
 PythonFunction[] := Keys[functionLibrary[]]
 PythonFunction[func_String, rest___] := 
     enclose @ Replace[
-        Echo[functionLibrary[]][func],
+        functionLibrary[][[func]],
         {
             _Missing :> confirm @ Failure[
                 "MissingFunction",
@@ -151,18 +118,47 @@ PythonFunction[func_String, rest___] :=
             assoc_Association :> With[
                 {namespace = First @ Keys @ assoc},
                 If[
-                    Length[Echo@assoc] > 1,
+                    Length[assoc] > 1,
                     Message[PythonFunction::notunique, func, namespace]
                 ];
-
                 PythonFunction[{namespace, func}]
-
-
             ]
         }
     ]
 
 
+
+PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] := 
+    enclose @ With[
+        {info = Replace[
+            functionLibrary[][[func, namespace]],
+            {
+                _Missing :> confirm @ Failure[
+                    "MissingFunction",
+                    <|
+                        "MessageTemplate" -> "Invalid function `Function` for namespace `Namespace`",
+                        "MessageParameters" -> <|
+                            "Function" -> func,
+                            "Namespace" -> namespace
+                        |>
+                    |>
+                ],
+                {one_} :> one,
+                s_List :> confirm @ Failure[
+                    "ImproperlyConfigured",
+                    <|
+                        "MessageTemplate" -> "The function `Function` has multiple implementations for namespace `Namespace`",
+                        "MessageParameters" -> <|
+                            "Function" -> func,
+                            "Namespace" -> namespace
+                        |>,
+                        "Implementations" -> Flatten[s[[All, "Python"]]]
+                    |>
+                ]
+            }
+        ]},
+        info
+    ]
 
 
 PythonFunction[{}, opts:OptionsPattern[]][args___] := enclose @ With[
@@ -175,3 +171,5 @@ PythonFunction[{}, opts:OptionsPattern[]][args___] := enclose @ With[
     },
     executePythonEntrypoint[module, func <> "." <> func, Function[#[args]], opts]
 ]
+
+
