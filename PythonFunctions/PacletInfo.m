@@ -17,7 +17,7 @@ Paclet[
 		},
 		{
 			"PythonFunctions",
-			"Namespace" -> "AnotherEnv",
+			"Namespace" -> "Code",
 			"Root" -> "Python/Functions/AnotherEnv"
 		},
 		{
@@ -30,8 +30,8 @@ Paclet[
 		},
 		{
 			"PythonFunctions",
-			"Namespace" -> "Test",
-			"Root" -> "Python/Functions/Test",
+			"Namespace" -> "Code",
+			"Root" -> "Python/Functions/Code",
 			"Evaluator" -> <|
 				"Dependencies" -> {"lightcurve", "pydantic"}
 			|>
