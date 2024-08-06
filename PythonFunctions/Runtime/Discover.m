@@ -78,9 +78,40 @@ processExtensions[] := processData[
             #Functions
         ];
         {}
+    ],
+
+    (* adding namespace in all functions *)
+
+    Function[
+        "Functions" -> Map[
+            Function[
+                info, <|
+                    "Namespace" -> #Namespace, 
+                    Replace[
+                        Lookup[info, "WL"], {
+                            {s_String} :> "Processor" :> Get[s],
+                            _ :> "Processor" -> Identity
+                        }
+                    ],
+                    "File" -> File[info[["Python", 1]]]
+
+
+                |>
+            ],
+            #Functions
+        ]
+
     ]
 ]
 
+
+functionLibrary[] := With[
+    {extensions = processExtensions[]},
+    Merge[
+        extensions[[All, "Functions"]],
+        Function @ GroupBy[#, Key["Namespace"]]
+    ]
+]
 
 
 
