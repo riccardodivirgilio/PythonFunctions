@@ -132,7 +132,7 @@ PythonFunction[func_String, rest___][args___] :=
                     Length[assoc] > 1,
                     Message[PythonFunction::notunique, func, namespace]
                 ];
-                PythonFunction[{namespace, func}][args]
+                PythonFunction[{namespace, func}, rest][args]
             ]
         }
     ]
@@ -155,7 +155,10 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
             ]
         },
         {
-            options = Sequence @@ Normal @ KeyDrop[info, {"Python", "WL", "Namespace"}]
+            options = Sequence @@ Flatten @ {
+                Normal @ KeyDrop[info, {"Python", "WL", "Namespace"}],
+                opts
+            }
         },
         {
             callPythonFunction = Function[
@@ -169,7 +172,6 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
                                 "Command" -> #1, 
                                 "Arguments" -> {args}
                             |>
-
                         ]
                     ], 
                     options
