@@ -5,8 +5,7 @@ processData[data_List, rest___] := Map[processData[#, rest] &, data]
 processData[data_Association, funcs___] := Fold[Append[#1, #2[#1]] &, data, Flatten @ {funcs}]
 
 
-discoverExtensions[] := Module[
-    {i = 0},
+discoverExtensions[] :=
     Flatten @ Map[
         Function @ Cases[
             #["Extensions"], 
@@ -16,13 +15,11 @@ discoverExtensions[] := Module[
                 "Root" -> "PythonFunctions",
                 "Evaluator" -> <||>,
                 rules,
-                "Location" -> #["Location"],
-                "ID" -> ++i
+                "Location" -> #["Location"]
             |>
         ],
         PacletFind[]
     ]
-]
 
 processExtensions[] := processData[
     discoverExtensions[],
@@ -58,11 +55,10 @@ processExtensions[] := processData[
     Function[
         "Functions" -> Map[
             Function[
-                info, <|
-                    "Namespace" -> #Namespace, 
-                    "Evaluator" -> #Evaluator,
-                    info
-                |>
+                info, Join[
+                    info, 
+                    KeyDrop[#, {"Functions", "Root", "Location", "AbsolutePath"}]
+                ]
             ],
             #Functions
         ]
