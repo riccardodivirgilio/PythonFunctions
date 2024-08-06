@@ -100,17 +100,13 @@ processExtensions[] := processData[
             ],
             #Functions
         ]
-
     ]
 ]
 
 
-functionLibrary[] := With[
-    {extensions = processExtensions[]},
-    Merge[
-        extensions[[All, "Functions"]],
-        Function @ GroupBy[#, Key["Namespace"]]
-    ]
+functionLibrary[] := KeySort @ Merge[
+    processExtensions[][[All, "Functions"]],
+    Function @ GroupBy[#, Key["Namespace"]]
 ]
 
 
@@ -135,8 +131,41 @@ $pythonFunctions := $pythonFunctions = Association @ Apply[
 Options[PythonFunction] = Options[executePythonEntrypoint]
 
 
-PythonFunction[] := Keys[$pythonFunctions]
-PythonFunction[func_String, opts:OptionsPattern[]][args___] := enclose @ With[
+PythonFunction::notunique = "The function `` appears in multiple namespaces, it was selected the one from `` namespace"
+
+PythonFunction[] := Keys[functionLibrary[]]
+PythonFunction[func_String, rest___] := 
+    enclose @ Replace[
+        Echo[functionLibrary[]][func],
+        {
+            _Missing :> confirm @ Failure[
+                "MissingFunction",
+                <|
+                    "MessageTemplate" -> "Invalid function `Function`",
+                    "MessageParameters" -> <|
+                        "Function" -> func
+                    |>,
+                    "Choices" -> PythonFunction[]
+                |>
+            ],
+            assoc_Association :> With[
+                {namespace = First @ Keys @ assoc},
+                If[
+                    Length[Echo@assoc] > 1,
+                    Message[PythonFunction::notunique, func, namespace]
+                ];
+
+                PythonFunction[{namespace, func}]
+
+
+            ]
+        }
+    ]
+
+
+
+
+PythonFunction[{}, opts:OptionsPattern[]][args___] := enclose @ With[
     {
         module = Lookup[
             $pythonFunctions, 
