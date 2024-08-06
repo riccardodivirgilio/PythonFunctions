@@ -163,7 +163,14 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
                 executePythonFile[
                     file, 
                     Function[
-                        handler[#1, {args}, #2]
+                        handler[
+                            #2,
+                            <|
+                                "Command" -> #1, 
+                                "Arguments" -> {args}
+                            |>
+
+                        ]
                     ], 
                     options
                 ]
@@ -173,7 +180,7 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
         Replace[
             Lookup[info, {"Python", "WL"}, {}], {
                 {{p_}, {wl_}}  :> callPythonFunction[p, Get[wl]],
-                {{p_}, {}}     :> callPythonFunction[p, Function[Apply[#1, #2]]],
+                {{p_}, {}}     :> callPythonFunction[p, ExternalEvaluate],
                 {impl:{__}}    :> multipleImplementationError[func, namespace, impl],
                 {_, impl:{__}} :> multipleImplementationError[func, namespace, impl]
             }

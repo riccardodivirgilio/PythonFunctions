@@ -19,7 +19,7 @@ Options[executePythonFile] := {
 }
 
 
-executePythonFile[file_String, handler_: Function[#1], OptionsPattern[]] := 
+executePythonFile[file_String, handler_: Function[#2], OptionsPattern[]] := 
     enclose @ With[
         {session = confirm @ StartExternalSession @ {
             "Python",
