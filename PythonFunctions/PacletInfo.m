@@ -14,11 +14,6 @@ Paclet[
             "Root" -> ".", 
 			"Context" -> {"PythonFunctions`"}, 
 			"Symbols" -> {}
-		},
-		{"Kernel", 
-            "Root" -> ".", 
-			"Context" -> {"PythonFunctionsBuilder`"}, 
-			"Symbols" -> {}
 		}
 	}
 ]
