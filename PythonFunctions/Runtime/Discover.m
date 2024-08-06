@@ -66,29 +66,13 @@ processExtensions[] := processData[
 ]
 
 
-functionLibrary[] := KeySort @ Merge[
+functionLibrary[] := functionLibrary[] = KeySort @ Merge[
     processExtensions[][[All, "Functions"]],
     Function @ GroupBy[#, Key["Namespace"]]
 ]
 
 
 
-
-
-relativeFileNames[ext_, base_, rest___] :=
-    With[
-        {len = Length[FileNameSplit[base]]},
-        Map[
-            FileNameDrop[#, {1, len}] &,
-            FileNames[ext, base, rest]
-        ]
-    ]
-
-$pythonFunctions := $pythonFunctions = Association @ Apply[
-    FileBaseName[#2] -> #1 &,
-    FileNameSplit /@ relativeFileNames["*.py", joinPythonLocation[], Infinity],
-    {1}
-]
 
 
 Options[PythonFunction] = Options[executePythonEntrypoint]
