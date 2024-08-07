@@ -4,7 +4,6 @@ Paclet[
 	MathematicaVersion -> "14.1+",
 	Description -> "PythonFunctions Library",
 	Creator -> "Riccardo Di Virgilio <riccardod@wolfram.com>",
-	Loading -> Automatic,
 	Extensions -> {
         {"Resource", 
         	"Root" -> "Python", 
