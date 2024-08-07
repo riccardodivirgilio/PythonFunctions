@@ -93,7 +93,7 @@ lookupLibrary[part___] := Replace[
 
 
 
-Options[PythonFunction] := Options[executePythonFile]
+Options[PythonFunction] := Options[executePythonOperation]
 
 
 (* failure modes *)
@@ -185,8 +185,8 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
         {
             callPythonFunction = Function[
                 {file, handler},
-                executePythonFile[
-                    file, 
+                executePythonOperation[
+                    ExternalObject["Python", File[file]], 
                     Function[
                         handler @ <|
                             "Command" -> #1, 

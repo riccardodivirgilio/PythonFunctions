@@ -8,7 +8,7 @@ joinPythonLocation[args___] := FileNameJoin @ {
 }
 
 
-Options[executePythonFile] := {
+Options[executePythonOperation] := {
     "ID"                     -> Automatic,
     "ReturnType"             -> "Expression",
     "Validate"               -> True,
@@ -26,7 +26,7 @@ Options[executePythonFile] := {
 }
 
 
-executePythonFile[file_String, handler_: Function[#2], OptionsPattern[]] := 
+executePythonOperation[op_, handler_: Function[#2], OptionsPattern[]] := 
     enclose @ With[
         {session = confirm @ StartExternalSession @ {
             "Python",
@@ -55,7 +55,7 @@ executePythonFile[file_String, handler_: Function[#2], OptionsPattern[]] :=
                     session, <|
                         "Command" -> ExternalOperation["Import", "function_handler", "function_handler"],
                         "Arguments" -> {
-                            ExternalObject["Python", File[file]], 
+                            op, 
                             "validate_call" -> OptionValue["Validate"]
                         }
                     |>
