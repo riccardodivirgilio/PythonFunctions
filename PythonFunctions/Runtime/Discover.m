@@ -14,6 +14,9 @@ discoverExtensions[] :=
                 "Namespace"        -> #["Name"], 
                 "ID"               -> "PythonFunctions" <> #["Name"],
                 "Root"             -> "PythonFunctions",
+                "Needs"            -> {},
+                "Functions"        -> {},
+                "Handlers"         -> {},
                 "Evaluator"        -> <||>,
                 "ImportPaths"      -> {},
                 "ProcessDirectory" -> "",
@@ -49,34 +52,49 @@ processExtensions[] := processData[
         ],
         "ProcessDirectory" -> FileNameJoin @ {#Location, #ProcessDirectory}
     }],
+
+
     (* search for all python files and wl files in the directory, grouped by file type *)
     Function[
-        "Functions" -> GroupBy[
-            FileNames[{"*.py", "*.m", "*.wl"}, #AbsolutePath, Infinity],
-            {FileBaseName, Function[If[FileExtension[#] == "py", "Python", "WL"]]},
-            Map[File]
-        ]
-    ],
+        "AllFunctions" -> Merge[{
+            GroupBy[
+                FileNames[{"*.py", "*.m", "*.wl"}, #AbsolutePath, Infinity],
+                {FileBaseName, Function[If[FileExtension[#] == "py", "Python", "WL"]]},
+                Map[File]
+            ],
+            Map[
+                <|"Python" -> Fold[
+                    ExternalOperation["GetAttribute", ##] & , 
+                    MapAt[ExternalOperation["Import", ##] &, Flatten[#], {1}]
+                ]|> &,
+                Association[#Functions]
+            ]
+        },
+        Merge[{##}, Join] &
+    ]],
 
 
     (* adding namespace in all functions *)
 
     Function[
-        "Functions" -> Map[
+        "AllFunctions" -> Map[
             Function[
                 info, Join[
                     info, 
-                    KeyDrop[#, {"Functions", "Root", "Location", "AbsolutePath"}]
+                    KeyDrop[#, {
+                        "AllFunctions", "Root", "Location", "AbsolutePath",
+                        "Handlers", "Functions"
+                    }]
                 ]
             ],
-            #Functions
+            #AllFunctions
         ]
     ]
 ]
 
 
 functionLibrary[] := KeySort @ Merge[
-    processExtensions[][[All, "Functions"]],
+    processExtensions[][[All, "AllFunctions"]],
     Function @ GroupBy[#, Key["Namespace"]]
 ]
 

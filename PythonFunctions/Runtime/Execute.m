@@ -11,6 +11,7 @@ joinPythonLocation[args___] := FileNameJoin @ {
 Options[executePythonOperation] := {
     "ID"                     -> Automatic,
     "ReturnType"             -> "Expression",
+    "Needs"                  -> {},
     "Validate"               -> True,
     "KeepOpen"               -> False,
     "StandardErrorFunction"  -> Automatic,
@@ -49,6 +50,9 @@ executePythonOperation[op_, handler_: Function[#2], OptionsPattern[]] :=
                 OptionValue["SessionProlog"]
             }
         }},
+
+        Scan[Needs, Flatten @ {OptionValue["Needs"]}];
+
         WithCleanup[
             handler[
                 confirm @ ExternalEvaluate[

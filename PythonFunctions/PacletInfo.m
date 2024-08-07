@@ -16,6 +16,20 @@ Paclet[
 		},
 		{
 			"PythonFunctions",
+			"Namespace" -> "Virtual",
+			"Functions" -> {
+				"Datetime"   -> {"datetime", "datetime"},
+				"Date"       -> {"datetime", "date"},
+				"Now"        -> {"datetime", "datetime", "now"},
+				"Today"      -> {"datetime", "date", "today"}
+			},
+			"Evaluator" -> <|
+				"Dependencies" -> {"pydantic"}
+			|>,
+			"Validate" -> False
+		},
+		{
+			"PythonFunctions",
 			"Namespace" -> "Code",
 			"Root" -> "Python/Functions/AnotherEnv"
 		},
