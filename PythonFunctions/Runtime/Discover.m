@@ -15,6 +15,7 @@ discoverExtensions[] :=
                 "ID" -> "PythonFunctions" <> #["Name"],
                 "Root" -> "PythonFunctions",
                 "Evaluator" -> <||>,
+                "ImportPaths" -> {},
                 rules,
                 "Location" -> #["Location"]
             |>
@@ -39,9 +40,13 @@ processExtensions[] := processData[
         ]
     ],
     (* creating paclet absolute path *)
-    Function[
-        "AbsolutePath" -> FileNameJoin @ {#Location, #Root}
-    ],
+    Function[{
+        "AbsolutePath" -> FileNameJoin @ {#Location, #Root},
+        "ImportPaths" -> Map[
+            Function[p, FileNameJoin @ {#Location, p}],
+            Flatten @ {#ImportPaths}
+        ]
+    }],
     (* search for all python files and wl files in the directory, grouped by file type *)
     Function[
         "Functions" -> GroupBy[

@@ -15,7 +15,8 @@ Options[executePythonFile] := {
     "KeepOpen" -> False,
     "StandardErrorFunction" -> Automatic,
     "StandardOutputFunction" -> Automatic,
-    "Evaluator" -> <||>
+    "Evaluator" -> <||>,
+    "ImportPaths" -> {}
 }
 
 
@@ -29,8 +30,9 @@ executePythonFile[file_String, handler_: Function[#2], OptionsPattern[]] :=
             "ReturnType"            -> OptionValue["ReturnType"],
             "SessionProlog"         -> {
 
-                "import sys; sys.path.extend" -> {{
-                    PacletObject["PythonFunctions"]["AssetLocation", "Common"]
+                "import sys; sys.path.extend" -> {Flatten @ {
+                    PacletObject["PythonFunctions"]["AssetLocation", "Common"],
+                    OptionValue["ImportPaths"]
                 }}
 
             }
