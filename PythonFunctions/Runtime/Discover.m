@@ -53,7 +53,8 @@ processExtensions[] := processData[
     Function[
         "Functions" -> GroupBy[
             FileNames[{"*.py", "*.m", "*.wl"}, #AbsolutePath, Infinity],
-            {FileBaseName, Function[If[FileExtension[#] == "py", "Python", "WL"]]}
+            {FileBaseName, Function[If[FileExtension[#] == "py", "Python", "WL"]]},
+            Map[File]
         ]
     ],
 
@@ -186,7 +187,7 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
             callPythonFunction = Function[
                 {file, handler},
                 executePythonOperation[
-                    ExternalObject["Python", File[file]], 
+                    ExternalObject["Python", file], 
                     Function[
                         handler @ <|
                             "Command" -> #1, 
