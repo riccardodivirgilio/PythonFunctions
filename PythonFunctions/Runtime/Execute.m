@@ -31,7 +31,6 @@ executePythonOperation[op_, handler_: Function[#2], OptionsPattern[]] :=
     enclose @ With[
         {session = confirm @ StartExternalSession @ {
             "Python",
-            "StandardErrorFunction"  -> OptionValue["StandardErrorFunction"],
             "ID"                     -> OptionValue["ID"],
             "Evaluator"              -> OptionValue["Evaluator"],
             "ReturnType"             -> OptionValue["ReturnType"],
