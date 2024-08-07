@@ -74,11 +74,21 @@ processExtensions[] := processData[
 ]
 
 
-functionLibrary[] := functionLibrary[] = KeySort @ Merge[
+functionLibrary[] := KeySort @ Merge[
     processExtensions[][[All, "Functions"]],
     Function @ GroupBy[#, Key["Namespace"]]
 ]
 
+
+$libraryCache := $libraryCache = functionLibrary[]
+
+lookupLibrary[part___] := Replace[
+    Part[$libraryCache, part], 
+    _Missing :> (
+        $libraryCache := $libraryCache = functionLibrary[];
+        Part[$libraryCache, part]
+    )
+]
 
 
 
@@ -130,12 +140,12 @@ PythonFunction::notunique = "The function `` appears in multiple namespaces, it 
 PythonFunction[] := 
     Sort @ DeleteDuplicates[Join @@ KeyValueMap[
         Function[{name, spaces}, KeyValueMap[{#1, name} &, spaces]],
-        functionLibrary[]
+        lookupLibrary[]
     ]]
 
 PythonFunction[func_String, rest___][args___] := 
     enclose @ Replace[
-        functionLibrary[][[func]],
+        lookupLibrary[func],
         {
             _Missing :> missingFunctionError[func],
             assoc_Association :> With[
@@ -155,7 +165,7 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
     enclose @ With[
         {
             info = Replace[
-                functionLibrary[][[func, namespace]],
+                lookupLibrary[func, namespace],
                 {
                     _Missing :> missingFunctionError[func, namespace],
                     {one_} :> one,
