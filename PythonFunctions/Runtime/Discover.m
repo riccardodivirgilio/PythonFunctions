@@ -11,14 +11,14 @@ discoverExtensions[] :=
             #["Extensions"], 
             {"PythonFunctions", rules___} :> <|
                 
-                "Namespace" -> #["Name"], 
-                "ID" -> "PythonFunctions" <> #["Name"],
-                "Root" -> "PythonFunctions",
-                "Evaluator" -> <||>,
-                "ImportPaths" -> {},
+                "Namespace"        -> #["Name"], 
+                "ID"               -> "PythonFunctions" <> #["Name"],
+                "Root"             -> "PythonFunctions",
+                "Evaluator"        -> <||>,
+                "ImportPaths"      -> {},
                 "ProcessDirectory" -> "",
                 rules,
-                "Location" -> #["Location"]
+                "Location"         -> #["Location"]
             |>
         ],
         PacletFind[]
@@ -40,7 +40,7 @@ processExtensions[] := processExtensions[] = processData[
             {}
         ]
     ],
-    (* creating paclet absolute path *)
+    (* creating absolute paths *)
     Function[{
         "AbsolutePath" -> FileNameJoin @ {#Location, #Root},
         "ImportPaths" -> Map[
