@@ -1,7 +1,7 @@
 Paclet[
 	Name -> "PythonFunctions",
 	Version -> "0.0.1",
-	MathematicaVersion -> "14+",
+	MathematicaVersion -> "14.1+",
 	Description -> "PythonFunctions Library",
 	Creator -> "Riccardo Di Virgilio <riccardod@wolfram.com>",
 	Loading -> Automatic,
