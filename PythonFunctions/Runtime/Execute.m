@@ -9,14 +9,20 @@ joinPythonLocation[args___] := FileNameJoin @ {
 
 
 Options[executePythonFile] := {
-    "ID" -> Automatic,
-    "ReturnType" -> "Expression",
-    "Validate" -> True,
-    "KeepOpen" -> False,
-    "StandardErrorFunction" -> Automatic,
+    "ID"                     -> Automatic,
+    "ReturnType"             -> "Expression",
+    "Validate"               -> True,
+    "KeepOpen"               -> False,
+    "StandardErrorFunction"  -> Automatic,
     "StandardOutputFunction" -> Automatic,
-    "Evaluator" -> <||>,
-    "ImportPaths" -> {}
+    "ProcessDirectory"       -> Automatic,
+    "ProcessEnvironment"     -> Automatic,
+    "Prolog"                 -> {}, 
+    "SessionProlog"          -> {},
+    "Epilog"                 -> {}, 
+    "SessionEpilog"          -> {},
+    "Evaluator"              -> <||>,
+    "ImportPaths"            -> {}
 }
 
 
@@ -24,17 +30,23 @@ executePythonFile[file_String, handler_: Function[#2], OptionsPattern[]] :=
     enclose @ With[
         {session = confirm @ StartExternalSession @ {
             "Python",
-            "StandardErrorFunction" -> OptionValue["StandardErrorFunction"],
-            "ID"                    -> OptionValue["ID"],
-            "Evaluator"             -> OptionValue["Evaluator"],
-            "ReturnType"            -> OptionValue["ReturnType"],
-            "SessionProlog"         -> {
-
+            "StandardErrorFunction"  -> OptionValue["StandardErrorFunction"],
+            "ID"                     -> OptionValue["ID"],
+            "Evaluator"              -> OptionValue["Evaluator"],
+            "ReturnType"             -> OptionValue["ReturnType"],
+            "StandardErrorFunction"  -> OptionValue["StandardErrorFunction"],
+            "StandardOutputFunction" -> OptionValue["StandardOutputFunction"],
+            "ProcessDirectory"       -> OptionValue["ProcessDirectory"],
+            "ProcessEnvironment"     -> OptionValue["ProcessEnvironment"],
+            "Epilog"                 -> OptionValue["Epilog"],
+            "SessionEpilog"          -> OptionValue["SessionEpilog"],
+            "Prolog"                 -> OptionValue["Prolog"],
+            "SessionProlog"          -> Flatten @ {
                 "import sys; sys.path.extend" -> {Flatten @ {
                     PacletObject["PythonFunctions"]["AssetLocation", "Common"],
                     OptionValue["ImportPaths"]
-                }}
-
+                }},
+                OptionValue["SessionProlog"]
             }
         }},
         WithCleanup[

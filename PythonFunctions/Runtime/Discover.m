@@ -16,6 +16,7 @@ discoverExtensions[] :=
                 "Root" -> "PythonFunctions",
                 "Evaluator" -> <||>,
                 "ImportPaths" -> {},
+                "ProcessDirectory" -> "",
                 rules,
                 "Location" -> #["Location"]
             |>
@@ -45,7 +46,8 @@ processExtensions[] := processData[
         "ImportPaths" -> Map[
             Function[p, FileNameJoin @ {#Location, p}],
             Flatten @ {#ImportPaths}
-        ]
+        ],
+        "ProcessDirectory" -> FileNameJoin @ {#Location, #ProcessDirectory}
     }],
     (* search for all python files and wl files in the directory, grouped by file type *)
     Function[
