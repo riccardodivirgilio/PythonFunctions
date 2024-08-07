@@ -68,11 +68,11 @@ processExtensions[] := processData[
                     ExternalOperation["GetAttribute", ##] & , 
                     MapAt[ExternalOperation["Import", ##] &, Flatten[#], {1}]
                 ]|> &,
-                Association[#Functions]
+                <|#Functions|>
             ],
             Map[
                 <|"WL" -> Symbol[#]|> &,
-                Association[#Handlers]
+                <|#Handlers|>
             ]
         },
         Merge[{##}, Join] &
