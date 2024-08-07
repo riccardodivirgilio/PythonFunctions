@@ -24,7 +24,7 @@ discoverExtensions[] :=
         PacletFind[]
     ]
 
-processExtensions[] := processExtensions[] = processData[
+processExtensions[] := processData[
     discoverExtensions[],
 
     (* patching evaluator with defaults, if no depedencies is specified we lookup for a requirement.txt in the root *)
@@ -128,16 +128,10 @@ multipleImplementationError[func_, namespace_, implementations_] := confirm @ Fa
 PythonFunction::notunique = "The function `` appears in multiple namespaces, it was selected the one from `` namespace"
 
 PythonFunction[] := 
-    Sort @ DeleteDuplicates @ Reverse[
-        List @@@ Join @@ Normal @ Part[
-            processExtensions[],
-            All, 
-            "Functions", 
-            All, 
-            "Namespace"
-        ], 
-        {2}
-    ]
+    Sort @ DeleteDuplicates[Join @@ KeyValueMap[
+        Function[{name, spaces}, KeyValueMap[{#1, name} &, spaces]],
+        functionLibrary[]
+    ]]
 
 PythonFunction[func_String, rest___][args___] := 
     enclose @ Replace[
