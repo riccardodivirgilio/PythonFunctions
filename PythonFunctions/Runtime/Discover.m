@@ -54,6 +54,7 @@ processExtensions[] := processData[
     }],
 
 
+
     (* search for all python files and wl files in the directory, grouped by file type *)
     Function[
         "AllFunctions" -> Merge[{
@@ -68,6 +69,10 @@ processExtensions[] := processData[
                     MapAt[ExternalOperation["Import", ##] &, Flatten[#], {1}]
                 ]|> &,
                 Association[#Functions]
+            ],
+            Map[
+                <|"WL" -> Symbol[#]|> &,
+                Association[#Handlers]
             ]
         },
         Merge[{##}, Join] &
@@ -220,7 +225,8 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
 
         Replace[
             Lookup[info, {"Python", "WL"}, {}], {
-                {{p_}, {wl_}}  :> callPythonFunction[p, Get[wl]],
+                {{p_}, {wl_String}} :> callPythonFunction[p, Get[wl]],
+                {{p_}, {wl_}}  :> callPythonFunction[p, wl],
                 {{p_}, {}}     :> callPythonFunction[p, Function[ExternalEvaluate[#Session, #Command -> #Arguments]]],
                 {impl:{__}}    :> multipleImplementationError[func, namespace, impl],
                 {_, impl:{__}} :> multipleImplementationError[func, namespace, impl]
