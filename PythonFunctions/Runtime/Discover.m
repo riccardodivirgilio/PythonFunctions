@@ -203,40 +203,44 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
             options = Sequence @@ Flatten @ {
                 Normal @ KeyDrop[info, {"Python", "WL", "Namespace"}],
                 opts
-            }
-        },
-        {
+            },
             toWL = Function[
                 Composition @@ Replace[
-                    #, {
-                        s_String :> Symbol[s], 
-                        s_File   :> Get[s], 
-                        any_     :> Throw @ missingFunctionError[func]
+                    {##}, {
+                        Automatic  :> Function[ExternalEvaluate[#Session, #Command -> #Arguments]],
+                        s_String   :> Symbol[s], 
+                        s_File     :> Get[s], 
+                        f_Function :> f, 
+                        any_       :> Throw @ missingFunctionError[func]
                     }, 
                     {1}
                 ]
-            ],
+            ]
+        },
+        {
             callPythonFunction = Function[
-                {file, handler},
                 executePythonOperation[
-                    ExternalObject["Python", file], 
-                    Function[
-                        handler @ <|
-                            "Command" -> #1, 
-                            "Session" -> #2,
-                            "Arguments" -> {args}
-                        |>
+                    ExternalObject["Python", #], 
+                    toWL[
+                        ##2, 
+                        Function[
+                            <|
+                                "Command" -> #1, 
+                                "Session" -> #2,
+                                "Arguments" -> {args}
+                            |>
+                        ]
                     ], 
                     options
-                ],
-                HoldAllComplete
+                ]
+                
             ]
         },
 
         Replace[
             Lookup[info, {"Python", "WL"}, {}], {
-                {{p_}, wl:{__}}   :> callPythonFunction[p, toWL[wl]],
-                {{p_}, {}}        :> callPythonFunction[p, Function[ExternalEvaluate[#Session, #Command -> #Arguments]]],
+                {{p_}, {wl__}}   :> callPythonFunction[p, wl],
+                {{p_}, {}}        :> callPythonFunction[p, Automatic],
                 {impl:{__}}       :> multipleImplementationError[func, namespace, impl],
                 {_, impl:{__}}    :> multipleImplementationError[func, namespace, impl]
             }
