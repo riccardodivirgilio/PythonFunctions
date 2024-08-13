@@ -75,7 +75,7 @@ processExtensions[] := processData[
                 <|#Handlers|>
             ]
         },
-        Merge[{##}, Join] &
+        Merge[{##}, Flatten] &
     ]],
 
 
