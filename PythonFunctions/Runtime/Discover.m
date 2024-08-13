@@ -71,7 +71,7 @@ processExtensions[] := processData[
                 <|#Functions|>
             ],
             Map[
-                <|"WL" -> Symbol[#]|> &,
+                <|"WL" -> Apply[Composition, Map[Symbol, Flatten[#]]]|> &,
                 <|#Handlers|>
             ]
         },
