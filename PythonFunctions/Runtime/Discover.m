@@ -225,7 +225,7 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
 
         Replace[
             Lookup[info, {"Python", "WL"}, {}], {
-                {{p_}, {wl_String}} :> callPythonFunction[p, Get[wl]],
+                {{p_}, {wl_File}} :> callPythonFunction[p, Get[wl]],
                 {{p_}, {wl_}}  :> callPythonFunction[p, wl],
                 {{p_}, {}}     :> callPythonFunction[p, Function[ExternalEvaluate[#Session, #Command -> #Arguments]]],
                 {impl:{__}}    :> multipleImplementationError[func, namespace, impl],
