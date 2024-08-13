@@ -12,4 +12,10 @@ PythonFunction[]
 
 ```
 
+Refresh all changes done to PacletInfo by doing:
+
+```
+PacletDataRebuild[]
+```
+
 Documentation is coming soon!
