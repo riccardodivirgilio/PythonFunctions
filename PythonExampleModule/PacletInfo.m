@@ -7,7 +7,7 @@ Paclet[
 	Extensions -> {
 		{
 			"PythonFunctions",
-			"Namespace" -> "ModuleExample",
+			"Namespace" -> "Dates",
 			"Functions" -> {
 				"Datetime"   -> {"datetime", "datetime"},
 				"Date"       -> {"datetime", "date"},
@@ -18,6 +18,29 @@ Paclet[
 				"Dependencies" -> {}
 			|>,
 			"Validate" -> False
+		},
+		{
+			"PythonFunctions",
+			"Namespace" -> "ProcessedModule",
+			"ImportPaths" -> {"Library"},
+			"Functions" -> {
+				"Name"           -> {"mymodule.functions", "create_name"},
+				"ReversedName"   -> {"mymodule.functions", "reversed_name"},
+				"RandomPlot"     -> {"mymodule.functions", "create_random_data"}
+			},
+			"Handlers" -> {
+				"RandomPlot" -> "InternalKernelCode`ProcessPlot"
+			},
+			"Evaluator" -> <|
+				"Dependencies" -> {"faker", "pydantic"}
+			|>,
+			"Validate" -> True,
+			"Needs" -> {"InternalKernelCode`"}
+		},
+		{"Kernel", 
+            "Root" -> ".", 
+			"Context" -> {"InternalKernelCode`"}, 
+			"Symbols" -> {}
 		}
 	}
 ]
