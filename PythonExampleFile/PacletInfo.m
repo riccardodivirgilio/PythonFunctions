@@ -8,7 +8,8 @@ Paclet[
 		{
 			"PythonFunctions",
 			"Namespace" -> "Code",
-			"Root" -> "Source/AnotherEnv"
+			"Root" -> "Source/AnotherEnv",
+			"Validate" -> True
 		},
 		{
 			"PythonFunctions",
@@ -16,7 +17,8 @@ Paclet[
 			"Root" -> "Source/Science",
 			"Evaluator" -> <|
 				"Dependencies" -> {"lightcurve", "pydantic"}
-			|>
+			|>,
+			"Validate" -> True
 		},
 		{
 			"PythonFunctions",
@@ -24,7 +26,8 @@ Paclet[
 			"Root" -> "Source/Code",
 			"Evaluator" -> <|
 				"Dependencies" -> {"lightcurve", "pydantic"}
-			|>
+			|>,
+			"Validate" -> True
 		}
 	}
 ]
