@@ -5,11 +5,6 @@ Paclet[
 	Description -> "PythonExampleFile Library",
 	Creator -> "Riccardo Di Virgilio <riccardod@wolfram.com>",
 	Extensions -> {
-		{"Kernel", 
-            "Root" -> ".", 
-			"Context" -> {"PythonFunctions`"}, 
-			"Symbols" -> {}
-		},
 		{
 			"PythonFunctions",
 			"Namespace" -> "ModuleExample",
