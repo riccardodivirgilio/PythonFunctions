@@ -6,8 +6,8 @@ Paclet[
 	Creator -> "Riccardo Di Virgilio <riccardod@wolfram.com>",
 	Extensions -> {
         {"Resource", 
-        	"Root" -> "Python", 
-        	"Resources" -> {"Common", "Functions"}
+        	"Root" -> ".", 
+        	"Resources" -> {"PythonLibrary", "PythonLibrary"}
         },
 		{"Kernel", 
             "Root" -> ".", 

@@ -43,7 +43,7 @@ executePythonOperation[op_, handler_: Function[#2], OptionsPattern[]] :=
             "Prolog"                 -> OptionValue["Prolog"],
             "SessionProlog"          -> Flatten @ {
                 "import sys; sys.path.extend" -> {Flatten @ {
-                    PacletObject["PythonFunctions"]["AssetLocation", "Common"],
+                    PacletObject["PythonFunctions"]["AssetLocation", "PythonLibrary"],
                     OptionValue["ImportPaths"]
                 }},
                 OptionValue["SessionProlog"]
