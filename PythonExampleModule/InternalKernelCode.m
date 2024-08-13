@@ -3,10 +3,10 @@ BeginPackage["InternalKernelCode`"]
 
 Begin["`Private`"]
 
-execute = Function[ExternalEvaluate[#Session, #Command -> #Arguments]]
+RunExternalEvaluate = Function[ExternalEvaluate[#Session, #Command -> #Arguments]]
 
 
-ProcessPlot[info_] := BarChart @ execute[info]
+MyBarChart[data_] := BarChart[data, ChartStyle -> "DarkRainbow"]
 
 
 End[] 

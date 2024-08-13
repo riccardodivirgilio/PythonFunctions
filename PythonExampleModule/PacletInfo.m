@@ -9,7 +9,7 @@ Paclet[
 			"PythonFunctions",
 			"Namespace" -> "Dates",
 			"Functions" -> {
-				"Datetime"   -> {"datetime", "datetime"},
+				"DateTime"   -> {"datetime", "datetime"},
 				"Date"       -> {"datetime", "date"},
 				"Now"        -> {"datetime", "datetime", "now"},
 				"Today"      -> {"datetime", "date", "today"}
@@ -24,12 +24,20 @@ Paclet[
 			"Namespace" -> "ProcessedModule",
 			"ImportPaths" -> {"Library"},
 			"Functions" -> {
-				"Name"           -> {"mymodule.functions", "create_name"},
-				"ReversedName"   -> {"mymodule.functions", "reversed_name"},
-				"RandomPlot"     -> {"mymodule.functions", "create_random_data"}
+				"Name"              -> {"mymodule.functions", "create_name"},
+				"ReversedName"      -> {"mymodule.functions", "reversed_name"},
+				"RandomPlot"        -> {"mymodule.functions", "create_random_data"},
+				"RandomStyledPlot"  -> {"mymodule.functions", "create_random_data"}
 			},
 			"Handlers" -> {
-				"RandomPlot" -> "InternalKernelCode`ProcessPlot"
+				"RandomPlot" -> {
+					"System`BarChart",
+					"InternalKernelCode`RunExternalEvaluate"
+				},
+				"RandomStyledPlot" -> {
+					"InternalKernelCode`MyBarChart",
+					"InternalKernelCode`RunExternalEvaluate"
+				}
 			},
 			"Evaluator" -> <|
 				"Dependencies" -> {"faker", "pydantic"}
