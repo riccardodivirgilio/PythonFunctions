@@ -228,7 +228,8 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
                         |>
                     ], 
                     options
-                ]
+                ],
+                HoldAllComplete
             ]
         },
 
