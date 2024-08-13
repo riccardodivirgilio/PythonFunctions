@@ -223,8 +223,8 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
                 toWL[
                     ##2, 
                     Function @ <|
-                        "Command"   -> #1, 
                         "Session"   -> #2,
+                        "Command"   -> #1, 
                         "Arguments" -> {args}
                     |>
                 ], 
