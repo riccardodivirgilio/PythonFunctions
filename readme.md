@@ -9,7 +9,6 @@ PacletDirectoryLoad["path/to/cloned/pythonfunctions"]
 <<PythonFunctions`
 
 PythonFunction[]
-
 ```
 
 Refresh all changes done to PacletInfo by doing:
