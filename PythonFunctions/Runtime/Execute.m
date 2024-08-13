@@ -12,7 +12,7 @@ Options[executePythonOperation] := {
     "ID"                     -> Automatic,
     "ReturnType"             -> "Expression",
     "Needs"                  -> {},
-    "Validate"               -> True,
+    "Validate"               -> False,
     "KeepOpen"               -> False,
     "StandardErrorFunction"  -> Automatic,
     "StandardOutputFunction" -> Automatic,
