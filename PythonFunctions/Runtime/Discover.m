@@ -10,7 +10,6 @@ discoverExtensions[] :=
         Function @ Cases[
             #["Extensions"], 
             {"PythonFunctions", rules___} :> <|
-                
                 "Namespace"        -> #["Name"], 
                 "ID"               -> "PythonFunctions" <> #["Name"],
                 "Root"             -> "PythonFunctions",
@@ -71,7 +70,7 @@ processExtensions[] := processData[
                 <|#Functions|>
             ],
             Map[
-                <|"WL" -> Apply[Composition, Map[Symbol, Flatten[#]]]|> &,
+                <|"WL" -> #|> &,
                 <|#Handlers|>
             ]
         },
@@ -207,6 +206,16 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
             }
         },
         {
+            toWL = Function[
+                Composition @@ Replace[
+                    #, {
+                        s_String :> Symbol[s], 
+                        s_File   :> Get[s], 
+                        any_     :> Throw @ missingFunctionError[func]
+                    }, 
+                    {1}
+                ]
+            ],
             callPythonFunction = Function[
                 {file, handler},
                 executePythonOperation[
@@ -225,11 +234,10 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
 
         Replace[
             Lookup[info, {"Python", "WL"}, {}], {
-                {{p_}, {wl_File}} :> callPythonFunction[p, Get[wl]],
-                {{p_}, {wl_}}  :> callPythonFunction[p, wl],
-                {{p_}, {}}     :> callPythonFunction[p, Function[ExternalEvaluate[#Session, #Command -> #Arguments]]],
-                {impl:{__}}    :> multipleImplementationError[func, namespace, impl],
-                {_, impl:{__}} :> multipleImplementationError[func, namespace, impl]
+                {{p_}, wl:{__}}   :> callPythonFunction[p, toWL[wl]],
+                {{p_}, {}}        :> callPythonFunction[p, Function[ExternalEvaluate[#Session, #Command -> #Arguments]]],
+                {impl:{__}}       :> multipleImplementationError[func, namespace, impl],
+                {_, impl:{__}}    :> multipleImplementationError[func, namespace, impl]
             }
         ]
     ]
