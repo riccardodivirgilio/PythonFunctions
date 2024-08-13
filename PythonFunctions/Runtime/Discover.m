@@ -234,10 +234,9 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
 
         Replace[
             Lookup[info, {"Python", "WL"}, {}], {
-                {{p_}, {wl__}} :> callPythonFunction[p, wl],
-                {{p_}, {}}     :> callPythonFunction[p, Automatic],
-                {impl:{__}}    :> multipleImplementationError[func, namespace, impl],
-                {_, impl:{__}} :> multipleImplementationError[func, namespace, impl]
+                {{p_}, {wl__}}  :> callPythonFunction[p, wl],
+                {{p_}, {}}      :> callPythonFunction[p, Automatic],
+                {impl:{__}, __} :> multipleImplementationError[func, namespace, impl]
             }
         ]
     ]
