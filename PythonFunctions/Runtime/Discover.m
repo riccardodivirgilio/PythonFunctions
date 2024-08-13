@@ -218,31 +218,26 @@ PythonFunction[{namespace_, func_}, opts:OptionsPattern[]][args___] :=
             ]
         },
         {
-            callPythonFunction = Function[
-                executePythonOperation[
-                    ExternalObject["Python", #], 
-                    toWL[
-                        ##2, 
-                        Function[
-                            <|
-                                "Command" -> #1, 
-                                "Session" -> #2,
-                                "Arguments" -> {args}
-                            |>
-                        ]
-                    ], 
-                    options
-                ]
-                
+            callPythonFunction = Function @ executePythonOperation[
+                ExternalObject["Python", #], 
+                toWL[
+                    ##2, 
+                    Function @ <|
+                        "Command"   -> #1, 
+                        "Session"   -> #2,
+                        "Arguments" -> {args}
+                    |>
+                ], 
+                options
             ]
         },
 
         Replace[
             Lookup[info, {"Python", "WL"}, {}], {
-                {{p_}, {wl__}}   :> callPythonFunction[p, wl],
-                {{p_}, {}}        :> callPythonFunction[p, Automatic],
-                {impl:{__}}       :> multipleImplementationError[func, namespace, impl],
-                {_, impl:{__}}    :> multipleImplementationError[func, namespace, impl]
+                {{p_}, {wl__}} :> callPythonFunction[p, wl],
+                {{p_}, {}}     :> callPythonFunction[p, Automatic],
+                {impl:{__}}    :> multipleImplementationError[func, namespace, impl],
+                {_, impl:{__}} :> multipleImplementationError[func, namespace, impl]
             }
         ]
     ]
