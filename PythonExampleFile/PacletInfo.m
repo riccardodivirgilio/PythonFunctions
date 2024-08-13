@@ -1,8 +1,8 @@
 Paclet[
-	Name -> "PythonExampleFile",
+	Name -> "PythonExampleModule",
 	Version -> "0.0.1",
 	MathematicaVersion -> "14.1+",
-	Description -> "PythonExampleFile Library",
+	Description -> "PythonExampleModule Library",
 	Creator -> "Riccardo Di Virgilio <riccardod@wolfram.com>",
 	Extensions -> {
 		{
