@@ -1,0 +1,23 @@
+<project name='PythonFunctions' basedir='..'>
+
+	<property name='component' value='PythonFunctions' />
+
+	<property name='app.name' value='${component}' />
+
+	<property environment='env' />
+	<import file='${env.RE_ANTLIBRARY_HOME}/ant-lib.xml' />
+
+	<!--
+		Component (platform-independent)
+	-->
+
+	<target name='Component.PythonFunctions.execute' extensionOf='Component.execute'>
+
+		<copy todir="${files_directory}">
+			<fileset dir="${basedir}" includes="${component}/**/*.m" />
+			<fileset dir="${basedir}" includes="${component}/**/*.wl" />
+			<fileset dir="${basedir}" includes="${component}/**/*.py" />
+		</copy>
+	</target>
+
+</project>
